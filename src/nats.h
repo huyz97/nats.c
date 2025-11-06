@@ -7983,6 +7983,11 @@ kvStore_Get(kvEntry **new_entry, kvStore *kv, const char *key);
 NATS_EXTERN natsStatus
 kvStore_GetRevision(kvEntry **new_entry, kvStore *kv, const char *key, uint64_t revision);
 
+/*
+魔改的
+*/
+NATS_EXTERN natsStatus kvStore_PutAsync(kvStore *kv, const char *key, const void *data, int len);
+
 /** \brief Places the new value for the key into the store.
  *
  * Places the new value for the key into the store.

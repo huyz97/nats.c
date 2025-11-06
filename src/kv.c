@@ -626,6 +626,22 @@ kvStore_GetRevision(kvEntry **new_entry, kvStore *kv, const char *key, uint64_t 
     return NATS_UPDATE_ERR_STACK(s);
 }
 
+natsStatus kvStore_PutAsync(kvStore *kv, const char *key, const void *data, int len) {
+    natsStatus s = NATS_OK;
+    DEFINE_BUF_FOR_SUBJECT;
+
+    if (kv == NULL) return nats_setDefaultError(NATS_INVALID_ARG);
+
+    if (!validKey(key)) return nats_setError(NATS_INVALID_ARG, "%s", kvErrInvalidKey);
+
+    BUILD_SUBJECT(USE_JS_PREFIX, FOR_A_PUT);
+    IFOK(s, js_PublishAsync(kv->js, natsBuf_Data(&buf), data, len, NULL));
+
+    natsBuf_Cleanup(&buf);
+
+    return NATS_UPDATE_ERR_STACK(s);
+}
+
 static natsStatus
 _putEntry(uint64_t *rev, kvStore *kv, jsPubOptions *po, const char *key, const void *data, int len)
 {
@@ -932,7 +948,7 @@ kvWatcher_Next(kvEntry **new_entry, kvWatcher *w, int64_t timeout)
     int64_t     start   = 0;
     int64_t     elapsed = 0;
 
-    if ((new_entry == NULL) || (w == NULL) || (timeout <= 0))
+    if ((new_entry == NULL) || (w == NULL) || (timeout < 0))
         return nats_setDefaultError(NATS_INVALID_ARG);
 
     *new_entry = NULL;
