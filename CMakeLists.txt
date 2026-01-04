@@ -54,7 +54,7 @@ option(NATS_BUILD_STATIC_EXAMPLES "Statically link examples" OFF)
 option(NATS_BUILD_STREAMING "Build NATS Streaming" OFF)
 
 option(NATS_BUILD_NO_PREFIX_CONNSTS "No prefix for connection status enum" OFF)
-option(NATS_BUILD_LIB_STATIC "Build static library" ON)
+option(NATS_BUILD_LIB_STATIC "Build static library" OFF)
 option(NATS_BUILD_LIB_SHARED "Build shared library" ON)
 option(NATS_COMPILER_HARDENING "Compiler hardening flags" OFF)
 option(NATS_WITH_EXPERIMENTAL "Build with EXPERIMENTAL API support" OFF)
@@ -297,17 +297,7 @@ endif(NATS_UPDATE_VERSION OR NATS_UPDATE_DOC)
 #------------
 
 #------------
-# pkg-config
-if(UNIX)
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/src/libnats.pc.in
-    ${PROJECT_BINARY_DIR}/libnats.pc
-    @ONLY
-  )
-  install (
-    FILES "${PROJECT_BINARY_DIR}/libnats.pc"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-endif(UNIX)
+# pkg-config (disabled for monorepo)
 #------------
 
 #----------------------------
